@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alicorn WC2026 Sweepstake</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#f7f6f2;--surface:#fff;--surface2:#f0efe9;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);--text:#1a1a18;--text2:#6b6b66;--text3:#a0a09a;--green:#2d6a2d;--green-bg:#eaf3e0;--green-mid:#2d7a2d;--amber:#854F0B;--amber-bg:#faeeda;--blue:#185FA5;--blue-bg:#e6f1fb;--red:#A32D2D;--red-bg:#fcebeb;--radius:10px;--radius-lg:14px;
+--t1:#92400e;--t1bg:#fef3c7;--t2:#1e40af;--t2bg:#dbeafe;--t3:#065f46;--t3bg:#d1fae5;--t4:#991b1b;--t4bg:#fee2e2;--t5:#374151;--t5bg:#f3f4f6;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.app{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.75rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.header h1{font-size:24px;font-weight:600;letter-spacing:-0.5px;}
+.header p{font-size:13px;color:var(--text2);margin-top:4px;}
+.badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:500;background:var(--green-bg);color:var(--green);}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.75rem;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;}
+.stat-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.stat-value{font-size:19px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:var(--surface2);padding:4px;border-radius:var(--radius);width:fit-content;flex-wrap:wrap;}
+.tab{padding:6px 14px;border-radius:7px;border:none;font-size:13px;font-family:inherit;cursor:pointer;background:transparent;color:var(--text2);font-weight:500;}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.panel{display:none;}.panel.active{display:block;}
+.btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border2);font-size:13px;font-family:inherit;cursor:pointer;background:var(--surface);color:var(--text);font-weight:500;display:inline-flex;align-items:center;gap:5px;transition:background .15s;}
+.btn:hover{background:var(--surface2);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn.primary{background:var(--text);color:var(--bg);border-color:var(--text);}
+.btn.success{background:var(--green);color:#fff;border-color:var(--green);}
+.btn.success:hover:not(:disabled){background:#235023;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+
+/* API key setup */
+.api-setup{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;}
+.api-setup h3{font-size:14px;font-weight:600;margin-bottom:4px;}
+.api-setup p{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5;}
+.api-input-row{display:flex;gap:8px;flex-wrap:wrap;}
+.api-input-row input{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border2);border-radius:8px;font-size:13px;font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);outline:none;}
+.api-input-row input:focus{border-color:var(--blue);}
+.key-status{display:flex;align-items:center;gap:6px;font-size:12px;margin-top:8px;}
+.key-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);}
+.key-dot.ok{background:var(--green);}.key-dot.error{background:var(--red);}
+
+/* Leaderboard */
+.lb-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1rem;}
+.lb-row{display:grid;grid-template-columns:44px 1fr auto;align-items:start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.gold-row{background:#fffbea;}.lb-row.silver-row{background:#f8f8f8;}
+.lb-row:hover{background:var(--surface2);}
+.rank-cell{font-size:22px;text-align:center;padding-top:2px;}
+.rank-num{font-size:14px;font-weight:600;color:var(--text3);}
+.lb-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.lb-teams{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;}
+.team-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:500;}
+.tp-t1{background:var(--t1bg);color:var(--t1);}.tp-t2{background:var(--t2bg);color:var(--t2);}
+.tp-t3{background:var(--t3bg);color:var(--t3);}.tp-t4{background:var(--t4bg);color:var(--t4);}.tp-t5{background:var(--t5bg);color:var(--t5);}
+.lb-score{text-align:right;}
+.lb-pts{font-size:24px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;}
+.lb-pts-label{font-size:11px;color:var(--text3);}
+
+/* Match list */
+.match-section{margin-bottom:1.25rem;}
+.section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.match-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;max-height:400px;overflow-y:auto;}
+.match-item{display:grid;grid-template-columns:95px 1fr 70px 80px;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;align-items:center;}
+.match-item:last-child{border-bottom:none;}
+.match-item:hover{background:var(--surface2);}
+.mi-date{font-size:11px;color:var(--text3);line-height:1.4;}
+.mi-date .mi-time{font-weight:600;color:var(--green-mid);font-size:12px;}
+.mi-teams{color:var(--text);font-size:12px;}
+.mi-teams .vs{color:var(--text3);margin:0 3px;}
+.mi-score{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;text-align:center;color:var(--text);}
+.mi-score.live{color:var(--blue);animation:livePulse 2s infinite;}
+.mi-score.upcoming{color:var(--text3);font-size:11px;}
+@keyframes livePulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.mi-stage{font-size:10px;padding:2px 6px;border-radius:99px;text-align:center;font-weight:600;white-space:nowrap;}
+.ms-gs{background:var(--green-bg);color:var(--green);}
+.ms-r32{background:#dbeafe;color:#1e40af;}
+.ms-r16{background:#ede0fa;color:#5b21b6;}
+.ms-qf{background:#fee2e2;color:#991b1b;}
+.ms-sf{background:#fef3c7;color:#92400e;}
+.ms-final{background:#fef08a;color:#713f12;}
+.ms-3rd{background:var(--surface2);color:var(--text2);}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);margin-right:4px;animation:livePulse 1s infinite;}
+
+/* Update panel */
+.update-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.p-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;}
+.p-card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.p-card-name{font-size:13px;font-weight:600;}
+.p-card-pts{font-size:12px;color:var(--text2);margin-left:auto;font-family:'DM Mono',monospace;}
+.team-update-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.team-update-row:last-child{border-bottom:none;}
+.tu-flag{font-size:14px;flex-shrink:0;}.tu-name{flex:1;color:var(--text2);}
+.tu-tier{font-size:10px;font-weight:600;padding:1px 5px;border-radius:4px;flex-shrink:0;}
+.tu-select{font-size:11px;padding:2px 5px;border-radius:5px;border:1px solid var(--border2);background:var(--bg);color:var(--text);font-family:inherit;max-width:105px;outline:none;cursor:pointer;}
+.tu-pts{font-size:11px;font-weight:600;min-width:24px;text-align:right;color:var(--green);font-family:'DM Mono',monospace;}
+
+/* Setup */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:1rem;}
+.pts-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:8px;margin-bottom:5px;}
+.pts-stage{font-size:13px;}
+.pts-input{display:flex;align-items:center;gap:4px;}
+.pts-input input{width:50px;padding:3px 7px;border:1px solid var(--border2);border-radius:6px;font-size:13px;text-align:right;outline:none;background:var(--surface);}
+.pts-input span{font-size:11px;color:var(--text3);}
+
+/* Prizes */
+.prizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
+.prize-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
+.prize-icon{font-size:26px;margin-bottom:7px;}.prize-place{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:3px;}
+.prize-title{font-size:13px;font-weight:600;margin-bottom:5px;}.prize-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* Misc */
+.notice{border-radius:var(--radius);padding:10px 14px;font-size:13px;margin-bottom:1rem;}
+.notice-blue{background:var(--blue-bg);color:var(--blue);}
+.notice-amber{background:var(--amber-bg);color:var(--amber);}
+.notice-green{background:var(--green-bg);color:var(--green);}
+.export-box{background:var(--surface2);border-radius:var(--radius);padding:1rem;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);white-space:pre-wrap;line-height:1.7;margin-top:1rem;max-height:200px;overflow-y:auto;border:1px solid var(--border);}
+footer{text-align:center;font-size:12px;color:var(--text3);margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+@media(max-width:500px){.match-item{grid-template-columns:80px 1fr 50px;}.mi-stage{display:none;}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div><h1>⚽ Alicorn WC2026 Sweepstake</h1><p>11 June – 19 July 2026 · Seeded draw · 48 teams · 10 players</p></div>
+  <span class="badge">No entry fee · Points-based</span>
+</div>
+<div class="stats" id="statsRow"></div>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('leaderboard')">🏆 Leaderboard</button>
+  <button class="tab" onclick="showTab('update')">✏️ Update</button>
+  <button class="tab" onclick="showTab('live')">🔄 Live scores</button>
+  <button class="tab" onclick="showTab('setup')">⚙️ Setup</button>
+  <button class="tab" onclick="showTab('prizes')">🎁 Prizes</button>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="panel active" id="panel-leaderboard"><div id="lbContent"></div></div>
+
+<!-- UPDATE -->
+<div class="panel" id="panel-update"><div id="updateContent"></div></div>
+
+<!-- LIVE SCORES -->
+<div class="panel" id="panel-live">
+  <div class="api-setup" id="apiSetup">
+    <h3>🔑 football-data.org API key</h3>
+    <p>Enter your free API key from <strong>football-data.org</strong> to enable fully comprehensive live scores — all 104 matches, live during games, knockouts automatically populated.<br>Register free at <a href="https://www.football-data.org/client/register" target="_blank" style="color:var(--blue);">football-data.org/client/register</a> — takes 60 seconds.</p>
+    <div class="api-input-row">
+      <input type="text" id="apiKeyInput" placeholder="Paste your API key here…" />
+      <button class="btn primary" onclick="saveKey()">Save key</button>
+      <button class="btn success" id="syncBtn" onclick="fetchLive(false)" disabled>🔄 Sync now</button>
+      <button class="btn" id="diagBtn" onclick="runDiag()" disabled>🔍 Test connection</button>
+    </div>
+    <div class="key-status">
+      <div class="key-dot" id="keyDot"></div>
+      <span id="keyStatus">No key saved</span>
+      <span id="autoRefreshStatus" style="margin-left:12px;font-size:12px;color:var(--text3);"></span>
+    </div>
+  </div>
+  <div id="liveMatchArea"></div>
+</div>
+
+<!-- SETUP -->
+<div class="panel" id="panel-setup"><div id="setupContent"></div></div>
+
+<!-- PRIZES -->
+<div class="panel" id="panel-prizes">
+  <div class="prizes-grid">
+    <div class="prize-card"><div class="prize-icon">🥇</div><div class="prize-place">1st place</div><div class="prize-title">Name on trophy + pick team lunch</div><div class="prize-desc">Name on the Alicorn WC2026 trophy and picks the next team lunch venue.</div></div>
+    <div class="prize-card"><div class="prize-icon">🥈</div><div class="prize-place">2nd place</div><div class="prize-title">Silver Pundit certificate</div><div class="prize-desc">Official Alicorn WC2026 Silver Pundit certificate.</div></div>
+    <div class="prize-card"><div class="prize-icon">🥉</div><div class="prize-place">3rd place</div><div class="prize-title">Bronze Pundit certificate</div><div class="prize-desc">Official Alicorn WC2026 Bronze Pundit certificate.</div></div>
+    <div class="prize-card"><div class="prize-icon">🪣</div><div class="prize-place">Last place</div><div class="prize-title">Bakes for the office</div><div class="prize-desc">Brings in baked goods on Monday 21 July. Shop-bought accepted.</div></div>
+  </div>
+</div>
+</div>
+<footer>Alicorn Limited · WC2026 Sweepstake · Live data: football-data.org</footer>
+
+<script>
+// ── CORE DATA ────────────────────────────────────────────
+const TIERS={t1:{label:'Elite',cls:'tp-t1'},t2:{label:'Contenders',cls:'tp-t2'},t3:{label:'Dark Horses',cls:'tp-t3'},t4:{label:'Underdogs',cls:'tp-t4'},t5:{label:'Minnows',cls:'tp-t5'}};
+const STAGES=[
+  {key:'none',label:'Group stage (out)',short:'Out',pts:0},
+  {key:'r32',label:'Round of 32',short:'R32',pts:2},
+  {key:'r16',label:'Round of 16',short:'R16',pts:4},
+  {key:'qf',label:'Quarter-final',short:'QF',pts:7},
+  {key:'sf',label:'Semi-final',short:'SF',pts:10},
+  {key:'third',label:'3rd place',short:'3rd',pts:13},
+  {key:'final',label:'Runner-up',short:'RU',pts:16},
+  {key:'winner',label:'Winner 🏆',short:'WIN',pts:25}
+];
+const FLAGS={"Netherlands":"🇳🇱","Turkey":"🇹🇷","Norway":"🇳🇴","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Czech Rep.":"🇨🇿","Germany":"🇩🇪","Croatia":"🇭🇷","Ivory Coast":"🇨🇮","New Zealand":"🇳🇿","Uzbekistan":"🇺🇿","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Morocco":"🇲🇦","Australia":"🇦🇺","Tunisia":"🇹🇳","Bosnia & Herz.":"🇧🇦","Argentina":"🇦🇷","USA":"🇺🇸","Ecuador":"🇪🇨","DR Congo":"🇨🇩","Curaçao":"🇨🇼","Mexico":"🇲🇽","Switzerland":"🇨🇭","Sweden":"🇸🇪","Haiti":"🇭🇹","France":"🇫🇷","South Korea":"🇰🇷","Canada":"🇨🇦","Saudi Arabia":"🇸🇦","Jordan":"🇯🇴","Brazil":"🇧🇷","Uruguay":"🇺🇾","Senegal":"🇸🇳","South Africa":"🇿🇦","Panama":"🇵🇦","Spain":"🇪🇸","Belgium":"🇧🇪","Egypt":"🇪🇬","Austria":"🇦🇹","Iraq":"🇮🇶","Portugal":"🇵🇹","Colombia":"🇨🇴","Algeria":"🇩🇿","Iran":"🇮🇷","Cape Verde":"🇨🇻","Japan":"🇯🇵","Ghana":"🇬🇭","Paraguay":"🇵🇾","Qatar":"🇶🇦"};
+
+// football-data.org team name → our name mapping
+const TEAM_MAP={"Netherlands":"Netherlands","Turkey":"Turkey","Norway":"Norway","Scotland":"Scotland","Czech Republic":"Czech Rep.","Germany":"Germany","Croatia":"Croatia","Côte d'Ivoire":"Ivory Coast","Ivory Coast":"Ivory Coast","New Zealand":"New Zealand","Uzbekistan":"Uzbekistan","England":"England","Morocco":"Morocco","Australia":"Australia","Tunisia":"Tunisia","Bosnia and Herzegovina":"Bosnia & Herz.","Argentina":"Argentina","USA":"USA","United States":"USA","Ecuador":"Ecuador","DR Congo":"DR Congo","Congo DR":"DR Congo","Mexico":"Mexico","Switzerland":"Switzerland","Sweden":"Sweden","Haiti":"Haiti","France":"France","Korea Republic":"South Korea","South Korea":"South Korea","Canada":"Canada","Saudi Arabia":"Saudi Arabia","Jordan":"Jordan","Brazil":"Brazil","Uruguay":"Uruguay","Senegal":"Senegal","South Africa":"South Africa","Panama":"Panama","Spain":"Spain","Belgium":"Belgium","Egypt":"Egypt","Austria":"Austria","Iraq":"Iraq","Portugal":"Portugal","Colombia":"Colombia","Algeria":"Algeria","Iran":"Iran","Cape Verde":"Cape Verde","Japan":"Japan","Ghana":"Ghana","Paraguay":"Paraguay","Qatar":"Qatar","Curaçao":"Curaçao","Curacao":"Curaçao"};
+
+// football-data.org stage → our stage key mapping
+const STAGE_MAP={"GROUP_STAGE":"none","ROUND_OF_32":"r32","ROUND_OF_16":"r16","QUARTER_FINALS":"qf","SEMI_FINALS":"sf","THIRD_PLACE":"third","FINAL":"final"};
+
+const ASSIGNMENTS={
+  "Alex":    [{n:"Netherlands",t:"t1"},{n:"Turkey",t:"t2"},{n:"Norway",t:"t3"},{n:"Scotland",t:"t4"},{n:"Czech Rep.",t:"t5"}],
+  "Hector":  [{n:"Germany",t:"t1"},{n:"Croatia",t:"t2"},{n:"Ivory Coast",t:"t3"},{n:"New Zealand",t:"t4"},{n:"Uzbekistan",t:"t5"}],
+  "Bart":    [{n:"England",t:"t1"},{n:"Morocco",t:"t2"},{n:"Australia",t:"t3"},{n:"Tunisia",t:"t4"},{n:"Bosnia & Herz.",t:"t5"}],
+  "Sarah":   [{n:"Argentina",t:"t1"},{n:"USA",t:"t2"},{n:"Ecuador",t:"t3"},{n:"DR Congo",t:"t4"},{n:"Curaçao",t:"t5"}],
+  "Hyun":    [{n:"Argentina",t:"t1",shared:true},{n:"Mexico",t:"t2"},{n:"Switzerland",t:"t3"},{n:"Sweden",t:"t4"},{n:"Haiti",t:"t5"}],
+  "Noam":    [{n:"France",t:"t1"},{n:"South Korea",t:"t2"},{n:"Canada",t:"t3"},{n:"Saudi Arabia",t:"t4"},{n:"Jordan",t:"t5"}],
+  "Caitlin": [{n:"Brazil",t:"t1"},{n:"Uruguay",t:"t2"},{n:"Senegal",t:"t3"},{n:"South Africa",t:"t4"},{n:"Panama",t:"t5"}],
+  "Natasha": [{n:"Spain",t:"t1"},{n:"Belgium",t:"t2"},{n:"Egypt",t:"t3"},{n:"Austria",t:"t4"},{n:"Iraq",t:"t5"}],
+  "Ariella": [{n:"Portugal",t:"t1"},{n:"Colombia",t:"t2"},{n:"Algeria",t:"t3"},{n:"Iran",t:"t4"},{n:"Cape Verde",t:"t5"}],
+  "Avi":     [{n:"France",t:"t1",shared:true},{n:"Japan",t:"t2"},{n:"Ghana",t:"t3"},{n:"Paraguay",t:"t4"},{n:"Qatar",t:"t5"}],
+};
+const participants=Object.keys(ASSIGNMENTS);
+
+// ── STATE ────────────────────────────────────────────────
+let ptValues={none:0,r32:2,r16:4,qf:7,sf:10,third:13,final:16,winner:25};
+let teamStages={};
+let lastSyncTime=null;
+let cachedMatches=[];
+let apiKey='';
+
+const SK='alicorn_wc2026_v5';
+function save(){try{localStorage.setItem(SK,JSON.stringify({ptValues,teamStages,lastSyncTime,cachedMatches,apiKey}));}catch(e){}}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(SK)||'null');
+    if(d){
+      ptValues=d.ptValues||ptValues;
+      teamStages=d.teamStages||{};
+      lastSyncTime=d.lastSyncTime||null;
+      cachedMatches=d.cachedMatches||[];
+      apiKey=d.apiKey||'';
+    }
+  }catch(e){}
+}
+
+// ── HELPERS ──────────────────────────────────────────────
+function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function getTeams(name){return ASSIGNMENTS[name]||[];}
+function getStagePts(s){return ptValues[s]||0;}
+function getPersonPts(name){return getTeams(name).reduce((s,t)=>s+getStagePts(teamStages[t.n]||'none'),0);}
+function getSorted(){return[...participants].sort((a,b)=>getPersonPts(b)-getPersonPts(a));}
+function setStage(team,stage){teamStages[team]=stage;save();renderAll();}
+function normTeam(n){return TEAM_MAP[n]||n;}
+function selAll(el){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);}
+
+function fmtBST(utcStr){
+  // football-data.org gives UTC times — convert to BST (UTC+1)
+  const d=new Date(utcStr);
+  const bst=new Date(d.getTime()+60*60*1000);
+  const day=bst.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const time=bst.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  return{day,time};
+}
+
+function stageLabel(s){
+  const m={GROUP_STAGE:'Group',ROUND_OF_32:'R32',ROUND_OF_16:'R16',QUARTER_FINALS:'QF',SEMI_FINALS:'SF',THIRD_PLACE:'3rd Place',FINAL:'⭐ Final'};
+  return m[s]||s;
+}
+function stageCls(s){
+  const m={GROUP_STAGE:'ms-gs',ROUND_OF_32:'ms-r32',ROUND_OF_16:'ms-r16',QUARTER_FINALS:'ms-qf',SEMI_FINALS:'ms-sf',THIRD_PLACE:'ms-3rd',FINAL:'ms-final'};
+  return m[s]||'ms-gs';
+}
+
+// ── API KEY ───────────────────────────────────────────────
+function saveKey(){
+  const inp=document.getElementById('apiKeyInput');
+  // Strip any non-ISO-8859-1 characters (smart quotes, unicode) that cause fetch header errors
+  const key=inp.value.replace(/[^\x20-\xFF]/g,'').trim();
+  if(!key){alert('Please paste your API key first.');return;}
+  apiKey=key;save();
+  updateKeyUI();
+  fetchLive();
+}
+
+async function runDiag(){
+  const area=document.getElementById('liveMatchArea');
+  const cleanKey=apiKey.replace(/[^\x20-\xFF]/g,'').trim();
+  const endpoint='https://api.football-data.org/v4/competitions/WC/matches';
+  const urlWithToken=endpoint+'?token='+encodeURIComponent(cleanKey);
+  let html='<div class="notice notice-blue"><strong>🔍 Connection test running…</strong><br><br>';
+
+  const tests=[
+    {name:'allorigins.win proxy',
+     fn:async()=>{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(urlWithToken),{cache:'no-store'});const w=await r.json();if(!w||!w.contents)throw new Error('empty');return JSON.parse(w.contents);}},
+    {name:'corsproxy.io (with header)',
+     fn:async()=>{const r=await fetch('https://corsproxy.io/?'+encodeURIComponent(endpoint),{cache:'no-store',mode:'cors',headers:{'X-Auth-Token':cleanKey,'x-requested-with':'XMLHttpRequest'}});if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}},
+    {name:'codetabs.com proxy',
+     fn:async()=>{const r=await fetch('https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(urlWithToken),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}},
+    {name:'direct (token in URL)',
+     fn:async()=>{const r=await fetch(urlWithToken,{cache:'no-store',mode:'cors'});if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}},
+    {name:'direct (token in header)',
+     fn:async()=>{const r=await fetch(endpoint,{cache:'no-store',mode:'cors',headers:{'X-Auth-Token':cleanKey}});if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}},
+  ];
+
+  area.innerHTML=html+'Testing…</div>';
+
+  for(const t of tests){
+    try{
+      const d=await t.fn();
+      const ok=d&&d.matches;
+      const apiErr=d&&d.errorCode;
+      if(apiErr){
+        html+=`❌ <strong>${t.name}</strong>: reached API but got error ${apiErr} — ${d.message||'check your key'}<br>`;
+      } else if(ok){
+        html+=`✅ <strong>${t.name}</strong>: SUCCESS — got ${d.matches.length} matches<br>`;
+      } else {
+        html+=`⚠️ <strong>${t.name}</strong>: connected but unexpected response<br>`;
+      }
+    }catch(e){
+      html+=`❌ <strong>${t.name}</strong>: ${e.message}<br>`;
+    }
+    area.innerHTML=html+'<br>Testing…</div>';
+  }
+  area.innerHTML=html+'<br>Done. Share these results if you need help.</div>';
+}
+
+function updateKeyUI(){
+  const dot=document.getElementById('keyDot');
+  const status=document.getElementById('keyStatus');
+  const btn=document.getElementById('syncBtn');
+  const inp=document.getElementById('apiKeyInput');
+  const arStatus=document.getElementById('autoRefreshStatus');
+  if(apiKey){
+    dot.className='key-dot ok';
+    status.textContent='API key saved ✓';
+    btn.disabled=false;
+    if(document.getElementById('diagBtn'))document.getElementById('diagBtn').disabled=false;
+    inp.value=apiKey.slice(0,8)+'••••••••••••••••••••••••';
+    if(arStatus)arStatus.textContent=autoRefreshTimer?'● Auto-refresh ON (every 60s)':'○ Auto-refresh paused';
+  } else {
+    dot.className='key-dot';
+    status.textContent='No key saved';
+    btn.disabled=true;
+    if(document.getElementById('diagBtn'))document.getElementById('diagBtn').disabled=true;
+    if(arStatus)arStatus.textContent='';
+  }
+}
+
+// ── AUTO-REFRESH ──────────────────────────────────────────
+let autoRefreshTimer=null;
+let countdownTimer=null;
+let nextRefreshAt=null;
+const REFRESH_INTERVAL=60000; // 60 seconds
+
+function startAutoRefresh(){
+  stopAutoRefresh();
+  nextRefreshAt=Date.now()+REFRESH_INTERVAL;
+  autoRefreshTimer=setInterval(()=>{
+    fetchLive(true);
+    nextRefreshAt=Date.now()+REFRESH_INTERVAL;
+  },REFRESH_INTERVAL);
+  countdownTimer=setInterval(updateCountdown,1000);
+  updateCountdown();
+}
+
+function stopAutoRefresh(){
+  if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
+  if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null;}
+  nextRefreshAt=null;
+}
+
+function updateCountdown(){
+  const el=document.getElementById('refreshCountdown');
+  if(!el||!nextRefreshAt)return;
+  const secs=Math.max(0,Math.round((nextRefreshAt-Date.now())/1000));
+  el.textContent=`Auto-refreshing in ${secs}s`;
+}
+
+// ── LIVE FETCH ────────────────────────────────────────────
+async function fetchLive(silent=false){
+  if(!apiKey){alert('Please enter your API key first.');return;}
+  const btn=document.getElementById('syncBtn');
+  btn.disabled=true;
+  if(!silent)btn.textContent='Syncing…';
+
+  const area=document.getElementById('liveMatchArea');
+  if(!silent)area.innerHTML=`<div class="notice notice-blue">⏳ Fetching all matches from football-data.org…</div>`;
+
+  // football-data.org supports CORS for browser requests with X-Auth-Token header
+  // We try the direct API call first (works in modern browsers since football-data.org
+  // allows CORS). The previous proxy approach was unreliable because allorigins.win
+  // strips custom headers, meaning the auth token never reached the API.
+  const endpoint=`https://api.football-data.org/v4/competitions/WC/matches`;
+
+  try{
+    let data;
+
+    // Sanitise key
+    const cleanKey=apiKey.replace(/[^\x20-\xFF]/g,'').trim();
+    if(!cleanKey){throw new Error('API key appears invalid — please re-paste it from football-data.org.');}
+
+    // football-data.org accepts token as a query param (avoids header CORS issues)
+    const urlWithToken=endpoint+'?token='+encodeURIComponent(cleanKey);
+
+    // Try multiple CORS proxies in order until one works
+    const proxies=[
+      // allorigins — wraps response in {contents: "..."}
+      async ()=>{
+        const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(urlWithToken),{cache:'no-store'});
+        const w=await r.json();
+        if(!w||!w.contents)throw new Error('empty response');
+        return JSON.parse(w.contents);
+      },
+      // corsproxy.io — pass token in header since it preserves headers
+      async ()=>{
+        const r=await fetch('https://corsproxy.io/?'+encodeURIComponent(endpoint),{
+          cache:'no-store',
+          mode:'cors',
+          headers:{'X-Auth-Token':cleanKey,'x-requested-with':'XMLHttpRequest'}
+        });
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.json();
+      },
+      // jsonp.afeld.me — another reliable CORS proxy
+      async ()=>{
+        const r=await fetch('https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(urlWithToken),{cache:'no-store'});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.json();
+      },
+      // Direct with token in URL — works if football-data.org allows CORS from github.io
+      async ()=>{
+        const r=await fetch(urlWithToken,{cache:'no-store',mode:'cors'});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.json();
+      },
+      // Direct with header — last resort
+      async ()=>{
+        const r=await fetch(endpoint,{cache:'no-store',mode:'cors',headers:{'X-Auth-Token':cleanKey}});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.json();
+      },
+    ];
+
+    let lastErr='All proxies failed';
+    for(const tryProxy of proxies){
+      try{
+        data=await tryProxy();
+        if(data&&(data.matches||data.errorCode))break;
+        data=null;
+      }catch(e){lastErr=e.message;data=null;}
+    }
+    if(!data)throw new Error('Could not reach football-data.org via any route. Error: '+lastErr);
+
+    // Check for API-level errors in the JSON body
+    if(data.errorCode===400||data.errorCode===403||data.message?.includes('token')){
+      throw new Error('Invalid API key — please double-check it at football-data.org.');
+    }
+    if(data.errorCode===429){throw new Error('Rate limit hit — wait 60 seconds and try again.');}
+
+    if(!data||!data.matches){throw new Error('No match data returned from API. The World Cup 2026 data may not be available yet on your plan.');}
+    cachedMatches=data.matches;
+    processAPIMatches(cachedMatches);
+    lastSyncTime=new Date().toISOString();
+    save();renderAll();
+
+    // Start auto-refresh now we have a working key
+    if(!autoRefreshTimer)startAutoRefresh();
+
+    const hasLive=cachedMatches.some(m=>m.status==='IN_PLAY'||m.status==='PAUSED');
+    const timeStr=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const liveNote=hasLive?` · <span style="color:var(--blue)"><span class="live-dot"></span>Live matches in progress</span>`:'';
+    const countdownHtml=`<span id="refreshCountdown" style="margin-left:8px;font-size:11px;color:var(--text3);">Auto-refreshing in 60s</span>`;
+
+    renderLiveMatches();
+    const existingNotice=area.querySelector('.notice');
+    const successBar=`<div class="notice notice-green">✅ Synced ${cachedMatches.length} matches · Updated: ${timeStr} BST${liveNote}${countdownHtml}</div>`;
+    if(existingNotice){existingNotice.outerHTML=successBar;}
+    else{area.insertAdjacentHTML('afterbegin',successBar);}
+
+  }catch(e){
+    console.error(e);
+    if(!silent){
+      area.innerHTML=`<div class="notice notice-amber">⚠️ ${e.message||'Could not fetch live data. Check your API key and try again.'}</div>`;
+    }
+  }
+  btn.disabled=false;
+  if(!silent)btn.textContent='🔄 Sync now';
+}
+
+function processAPIMatches(matches){
+  // Process ALL matches — group stage AND all knockout rounds
+  // Correctly handles: FINISHED (full result known), IN_PLAY/PAUSED (team has reached this stage),
+  // SCHEDULED/TIMED (ignore — team hasn't played yet)
+  const stageOrder=['none','r32','r16','qf','sf','third','final','winner'];
+  const teamBest={};
+
+  matches.forEach(m=>{
+    const isActive=m.status==='FINISHED'||m.status==='IN_PLAY'||m.status==='PAUSED';
+    if(!isActive)return;
+
+    const apiStage=m.stage;
+    const ourStage=STAGE_MAP[apiStage]||'none';
+    const t1=normTeam(m.homeTeam&&m.homeTeam.name||'');
+    const t2=normTeam(m.awayTeam&&m.awayTeam.name||'');
+
+    // Both teams have reached this stage by virtue of being in the match
+    [t1,t2].forEach(t=>{
+      if(!t)return;
+      const cur=teamBest[t]||'none';
+      if(stageOrder.indexOf(ourStage)>stageOrder.indexOf(cur))teamBest[t]=ourStage;
+    });
+
+    // For FINISHED knockout matches, determine the winner and advance them
+    if(m.status==='FINISHED'&&ourStage!=='none'){
+      const score=m.score&&m.score.fullTime;
+      if(score&&score.home!=null&&score.away!=null){
+        let winner=null;
+        if(score.home>score.away)winner=t1;
+        else if(score.away>score.home)winner=t2;
+        else if(m.score.penalties){
+          const p=m.score.penalties;
+          if(p.home>p.away)winner=t1;
+          else if(p.away>p.home)winner=t2;
+        }
+        if(winner){
+          // Winner reached the NEXT stage (will be confirmed when that match is fetched)
+          // but if it's the Final, mark as winner immediately
+          if(ourStage==='final'){
+            teamBest[winner]='winner';
+          }
+        }
+      }
+    }
+  });
+
+  // Apply to teamStages — only upgrade, never downgrade manual entries
+  Object.entries(teamBest).forEach(([team,stage])=>{
+    const cur=teamStages[team]||'none';
+    if(stageOrder.indexOf(stage)>stageOrder.indexOf(cur))teamStages[team]=stage;
+  });
+}
+
+function renderLiveMatches(){
+  const area=document.getElementById('liveMatchArea');
+  if(!cachedMatches.length){area.innerHTML='<div class="notice notice-amber">No match data loaded yet. Enter your API key and sync.</div>';return;}
+
+  const live=cachedMatches.filter(m=>m.status==='IN_PLAY'||m.status==='PAUSED');
+  const finished=cachedMatches.filter(m=>m.status==='FINISHED').reverse();
+  const scheduled=cachedMatches.filter(m=>m.status==='SCHEDULED'||m.status==='TIMED');
+
+  let html='';
+
+  if(live.length){
+    html+=`<div class="match-section"><div class="section-label"><span class="live-dot"></span>Live now (${live.length})</div><div class="match-list">`;
+    live.forEach(m=>html+=matchRow(m,'live'));
+    html+=`</div></div>`;
+  }
+
+  if(scheduled.length){
+    html+=`<div class="match-section"><div class="section-label">Upcoming (${scheduled.length})</div><div class="match-list">`;
+    scheduled.forEach(m=>html+=matchRow(m,'upcoming'));
+    html+=`</div></div>`;
+  }
+
+  if(finished.length){
+    html+=`<div class="match-section"><div class="section-label">Results (${finished.length})</div><div class="match-list">`;
+    finished.slice(0,40).forEach(m=>html+=matchRow(m,'finished'));
+    html+=`</div></div>`;
+  }
+
+  // Append after any status notice
+  const existing=area.querySelector('.notice');
+  if(existing){existing.insertAdjacentHTML('afterend',html);}
+  else{area.innerHTML=html;}
+}
+
+function matchRow(m,type){
+  const t1=normTeam(m.homeTeam&&m.homeTeam.name||'TBC');
+  const t2=normTeam(m.awayTeam&&m.awayTeam.name||'TBC');
+  const f1=FLAGS[t1]||'🏳';const f2=FLAGS[t2]||'🏳';
+  const bst=fmtBST(m.utcDate);
+  let scoreHtml='';
+  if(type==='live'){
+    const s=m.score&&m.score.fullTime;
+    const min=m.minute?`${m.minute}'`:'Live';
+    scoreHtml=`<div class="mi-score live">${s&&s.home!=null?s.home:'?'}–${s&&s.away!=null?s.away:'?'} <span style="font-size:10px;">(${min})</span></div>`;
+  } else if(type==='finished'){
+    const s=m.score&&m.score.fullTime;
+    scoreHtml=`<div class="mi-score">${s&&s.home!=null?s.home:'?'}–${s&&s.away!=null?s.away:'?'}</div>`;
+  } else {
+    scoreHtml=`<div class="mi-score upcoming">${bst.time} BST</div>`;
+  }
+  const stg=m.stage||'GROUP_STAGE';
+  return `<div class="match-item">
+    <div class="mi-date"><div>${bst.day}</div><div class="mi-time">${type!=='upcoming'?bst.time+' BST':''}</div></div>
+    <div class="mi-teams">${f1} ${t1}<span class="vs">vs</span>${f2} ${t2}</div>
+    ${scoreHtml}
+    <div class="mi-stage ${stageCls(stg)}">${stageLabel(stg)}</div>
+  </div>`;
+}
+
+// ── RENDER FUNCTIONS ─────────────────────────────────────
+function renderStats(){
+  const sorted=getSorted();const leader=sorted[0];const topPts=getPersonPts(leader);
+  const synced=lastSyncTime?`<div class="stat"><div class="stat-label">Synced</div><div class="stat-value" style="font-size:12px;padding-top:3px;">${new Date(lastSyncTime).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div></div>`:'';
+  const leaderStat=topPts>0?`<div class="stat"><div class="stat-label">Leading</div><div class="stat-value" style="font-size:13px;padding-top:2px;">${leader}</div></div>`:'';
+  document.getElementById('statsRow').innerHTML=`<div class="stat"><div class="stat-label">Players</div><div class="stat-value">10</div></div><div class="stat"><div class="stat-label">Teams</div><div class="stat-value">48</div></div><div class="stat"><div class="stat-label">Kick-off</div><div class="stat-value" style="font-size:12px;padding-top:3px;">11 Jun</div></div><div class="stat"><div class="stat-label">Final</div><div class="stat-value" style="font-size:12px;padding-top:3px;">19 Jul</div></div>${leaderStat}${synced}`;
+}
+
+function renderLeaderboard(){
+  const el=document.getElementById('lbContent');const sorted=getSorted();const medals=['🥇','🥈','🥉'];
+  let html=`<div class="lb-table">`;
+  sorted.forEach((name,i)=>{
+    const pts=getPersonPts(name);const teams=getTeams(name);
+    const rowCls=i===0&&pts>0?'lb-row gold-row':i===1&&pts>0?'lb-row silver-row':'lb-row';
+    const rank=i<3?`<span style="font-size:22px">${medals[i]}</span>`:`<span class="rank-num">${i+1}</span>`;
+    const teamPills=teams.map(t=>`<span class="team-pill ${TIERS[t.t].cls}">${FLAGS[t.n]||'🏳'} ${t.n}${t.shared?'<span style="font-size:9px;opacity:.6;"> shared</span>':''}</span>`).join('');
+    html+=`<div class="${rowCls}"><div class="rank-cell">${rank}</div><div><div class="lb-name">${name}</div><div class="lb-teams">${teamPills}</div></div><div class="lb-score"><div class="lb-pts">${pts}</div><div class="lb-pts-label">pts</div></div></div>`;
+  });
+  html+=`</div><div class="btn-row"><button class="btn" onclick="copyStandings()">📋 Copy standings</button><button class="btn success" onclick="showTab('live')">🔄 Live scores</button></div><div id="copyOut" style="display:none;"></div>`;
+  el.innerHTML=html;
+}
+
+function copyStandings(){
+  const sorted=getSorted();let text=`🏆 ALICORN WC2026 STANDINGS\n${'─'.repeat(40)}\n`;
+  sorted.forEach((name,i)=>{const pts=getPersonPts(name);const teams=getTeams(name).map(t=>`${FLAGS[t.n]||''} ${t.n}`).join(', ');text+=`${i+1}. ${name} — ${pts} pts\n   ${teams}\n`;});
+  text+=`\nUpdated: ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}`;
+  const el=document.getElementById('copyOut');el.style.display='';
+  el.innerHTML=`<div class="export-box">${text}</div><button class="btn" style="margin-top:8px;" onclick="selAll(this.previousElementSibling)">Select all</button>`;
+  try{navigator.clipboard.writeText(text);}catch(e){}
+}
+
+function renderUpdate(){
+  const el=document.getElementById('updateContent');
+  let html=`<div class="notice notice-blue" style="margin-bottom:1rem;">Scores auto-update via <strong>Live scores</strong> tab. Use dropdowns below for manual overrides.</div><div class="update-grid">`;
+  participants.forEach(name=>{
+    const teams=getTeams(name);const pts=getPersonPts(name);
+    html+=`<div class="p-card"><div class="p-card-hdr"><div class="avatar">${initials(name)}</div><div class="p-card-name">${name}</div><div class="p-card-pts">${pts} pts</div></div>`;
+    teams.forEach(t=>{const s=teamStages[t.n]||'none';const p=getStagePts(s);
+      html+=`<div class="team-update-row"><span class="tu-flag">${FLAGS[t.n]||'🏳'}</span><span class="tu-name">${t.n}</span><span class="tu-tier ${TIERS[t.t].cls}">${TIERS[t.t].label}</span><select class="tu-select" onchange="setStage('${t.n}',this.value)">${STAGES.map(st=>`<option value="${st.key}"${s===st.key?' selected':''}>${st.short}(+${ptValues[st.key]})</option>`).join('')}</select><span class="tu-pts">${p>0?'+'+p:''}</span></div>`;
+    });
+    html+=`</div>`;
+  });html+=`</div>`;el.innerHTML=html;
+}
+
+function renderSetup(){
+  let html=`<div class="card"><div class="card-title">Seeded Draw — All Assignments</div>`;
+  participants.forEach(name=>{
+    const teams=getTeams(name);
+    html+=`<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)"><strong style="font-size:13px;">${name}</strong><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">`;
+    teams.forEach(t=>{html+=`<span class="team-pill ${TIERS[t.t].cls}">${FLAGS[t.n]||'🏳'} ${t.n}</span>`;});
+    html+=`</div></div>`;
+  });
+  html+=`</div><div class="card"><div class="card-title">Points per stage</div>`;
+  STAGES.filter(s=>s.key!=='none').forEach(s=>{html+=`<div class="pts-row"><span class="pts-stage">${s.label}</span><div class="pts-input"><input type="number" value="${ptValues[s.key]}" min="0" onchange="ptValues['${s.key}']=parseInt(this.value)||0;save();renderAll();"/><span>pts</span></div></div>`;});
+  html+=`</div>`;document.getElementById('setupContent').innerHTML=html;
+}
+
+function showTab(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  ['leaderboard','update','live','setup','prizes'].forEach((t,i)=>{if(t===name)document.querySelectorAll('.tab')[i].classList.add('active');});
+  if(name==='live'){
+    updateKeyUI();
+    if(cachedMatches.length)renderLiveMatches();
+    if(apiKey)startAutoRefresh();
+  } else {
+    stopAutoRefresh();
+  }
+}
+
+function renderAll(){renderStats();renderLeaderboard();renderUpdate();renderSetup();}
+
+// ── INIT ─────────────────────────────────────────────────
+load();
+renderAll();
+updateKeyUI();
+if(apiKey)document.getElementById('apiKeyInput').value=apiKey.slice(0,8)+'••••••••••••••••••••••••';
+if(cachedMatches.length)renderLiveMatches();
+// Stop auto-refresh on page hide (tab switch/close) to avoid ghost timers
+document.addEventListener('visibilitychange',()=>{
+  const liveActive=document.getElementById('panel-live').classList.contains('active');
+  if(document.hidden){stopAutoRefresh();}
+  else if(liveActive&&apiKey){startAutoRefresh();fetchLive(true);}
+});
+</script>
+</body>
+</html>
